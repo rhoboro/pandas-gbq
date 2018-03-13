@@ -1411,7 +1411,7 @@ class TestToGBQIntegration(object):
         assert len(result_df) == test_size
 
         expected = df['times'].astype('M8[ns]').sort_values()
-        result = result_df['times'].sort_values()
+        result = result_df['times'].astype('M8[ns]').sort_values()
 
         tm.assert_numpy_array_equal(expected.values, result.values)
 
