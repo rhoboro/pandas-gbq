@@ -1389,6 +1389,31 @@ class TestToGBQIntegration(object):
                        private_key=self.credentials,
                        table_schema=test_schema)
 
+    def test_upload_data_with_timestamp(self):
+        df = tm.makeMixedDataFrame()
+        test_id = "21"
+        test_size = 10
+        df = make_mixed_dataframe_v2(test_size)
+
+        gbq.to_gbq(
+            df, self.destination_table + test_id,
+            _get_project_id(),
+            private_key=self.credentials)
+
+        result_df = gbq.read_gbq("SELECT * FROM {0}".format(
+            self.destination_table + test_id),
+            project_id=_get_project_id(),
+            private_key=self.credentials)
+
+        assert len(result_df) == test_size
+
+        result = result_df['times'].sort_values()
+        expected = df['times'].sort_values()
+        print(expected.values)
+        print(result.values)
+        tm.assert_numpy_array_equal(expected.values, result.values)
+
+
     def test_list_dataset(self):
         dataset_id = self.dataset_prefix + "1"
         assert dataset_id in self.dataset.datasets()
