@@ -1390,12 +1390,11 @@ class TestToGBQIntegration(object):
                        table_schema=test_schema)
 
     def test_upload_data_with_timestamp(self):
-        df = tm.makeMixedDataFrame()
         test_id = "21"
         test_size = 6
         df = DataFrame(np.random.randn(test_size, 4), index=range(test_size),
                        columns=list('ABCD'))
-        test_timestamp = datetime.now(pytz.timezone('UTC'))
+        test_timestamp = datetime.now()
         df['times'] = test_timestamp
 
         gbq.to_gbq(
