@@ -1395,7 +1395,7 @@ class TestToGBQIntegration(object):
         test_size = 6
         df = DataFrame(np.random.randn(test_size, 4), index=range(test_size),
                                        columns=list('ABCD'))
-        test_timestamp = datetime.now(pytz.timezone('US/Arizona'))
+        test_timestamp = datetime.now(pytz.timezone('UTC'))
         df['times'] = test_timestamp
 
         gbq.to_gbq(
@@ -1410,7 +1410,7 @@ class TestToGBQIntegration(object):
 
         assert len(result_df) == test_size
 
-        expected = df['times'].apply(lambda x: x.astimezone(pytz.timezone('UTC'))).sort_values()
+        expected = df['times'].sort_values()
         result = result_df['times'].sort_values()
 
         tm.assert_numpy_array_equal(expected.values, result.values)
