@@ -1392,10 +1392,10 @@ class TestToGBQIntegration(object):
     def test_upload_data_with_timestamp(self):
         df = tm.makeMixedDataFrame()
         test_id = "21"
-        test_size = 10
-        df = DataFrame(np.random.randn(6, 4), index=range(6),
+        test_size = 6
+        df = DataFrame(np.random.randn(test_size, 4), index=range(test_size),
                                        columns=list('ABCD'))
-        test_timestamp = datetime.now(pytz.timezone('UTC'))
+        test_timestamp = datetime.now(pytz.timezone('US/Arizona'))
         df['times'] = test_timestamp
 
         gbq.to_gbq(
@@ -1410,8 +1410,9 @@ class TestToGBQIntegration(object):
 
         assert len(result_df) == test_size
 
-        result = result_df['times'].sort_values()
+        result = result_df['times'].apply(lambda x: x.astimezone(pytz.timezone('US/Arizona'))).sort_values()
         expected = df['times'].sort_values()
+
         tm.assert_numpy_array_equal(expected.values, result.values)
 
 
