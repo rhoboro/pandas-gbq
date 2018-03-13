@@ -1410,8 +1410,8 @@ class TestToGBQIntegration(object):
 
         assert len(result_df) == test_size
 
-        result = result_df['times'].apply(lambda x: x.astimezone(pytz.timezone('US/Arizona'))).sort_values()
-        expected = df['times'].sort_values()
+        expected = df['times'].apply(lambda x: x.astimezone(pytz.timezone('UTC'))).sort_values()
+        result = result_df['times'].sort_values()
 
         tm.assert_numpy_array_equal(expected.values, result.values)
 
