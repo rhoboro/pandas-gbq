@@ -1393,7 +1393,10 @@ class TestToGBQIntegration(object):
         df = tm.makeMixedDataFrame()
         test_id = "21"
         test_size = 10
-        df = make_mixed_dataframe_v2(test_size)
+        df = DataFrame(np.random.randn(6, 4), index=range(6),
+                                       columns=list('ABCD'))
+        test_timestamp = datetime.now(pytz.timezone('UTC'))
+        df['times'] = test_timestamp
 
         gbq.to_gbq(
             df, self.destination_table + test_id,
@@ -1409,8 +1412,6 @@ class TestToGBQIntegration(object):
 
         result = result_df['times'].sort_values()
         expected = df['times'].sort_values()
-        print(expected.values)
-        print(result.values)
         tm.assert_numpy_array_equal(expected.values, result.values)
 
 
